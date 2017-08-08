@@ -34,11 +34,13 @@ export default class EmbedViewManager extends EventEmitter {
 		if ( ! this.hasOwnProperty( 'siteId' ) ) {
 			// First update (after adding initial listener) should trigger a
 			// fetch, but not emit a change event
+			//console.log('updatesite first update');
 			this.siteId = siteId;
 			this.fetchSiteEmbeds();
 		} else if ( this.siteId !== siteId ) {
 			// Subsequent updates should neither emit a change nor trigger a
 			// fetch unless the site has changed
+			//console.log('udpatesite onchange');
 			this.siteId = siteId;
 			this.onChange();
 		}
@@ -134,5 +136,9 @@ export default class EmbedViewManager extends EventEmitter {
 
 	getComponent() {
 		return EmbedView;
+	}
+
+	edit( editor, content ) {
+		editor.execCommand( 'embedEditLink', content );
 	}
 }
