@@ -271,6 +271,8 @@ class ActivityLog extends Component {
 
 	renderLogs() {
 		const { isPressable, isRewindActive, logs, moment, translate, siteId } = this.props;
+		const { requestedRestoreTimestamp, showRestoreConfirmDialog } = this.state;
+
 		const startMoment = this.getStartMoment();
 
 		if ( isNull( logs ) ) {
@@ -333,7 +335,19 @@ class ActivityLog extends Component {
 			);
 		}
 
-		return <section className="activity-log__wrapper">{ activityDays }</section>;
+		return (
+			<section className="activity-log__wrapper">
+				{ activityDays }
+				{ showRestoreConfirmDialog && (
+					<ActivityLogConfirmDialog
+						applySiteOffset={ this.applySiteOffset }
+						timestamp={ requestedRestoreTimestamp }
+						onClose={ this.handleRestoreDialogClose }
+						onConfirm={ this.handleRestoreDialogConfirm }
+					/>
+				) }
+			</section>
+		);
 	}
 
 	renderMonthNavigation( position ) {
@@ -363,15 +377,7 @@ class ActivityLog extends Component {
 	}
 
 	render() {
-		const {
-			canViewActivityLog,
-			isPressable,
-			isRewindActive,
-			siteId,
-			siteTitle,
-			slug,
-			translate,
-		} = this.props;
+		const { canViewActivityLog, isPressable, isRewindActive, siteId, slug, translate } = this.props;
 
 		if ( false === canViewActivityLog ) {
 			return (
@@ -386,8 +392,6 @@ class ActivityLog extends Component {
 		}
 
 		const startMoment = this.getStartMoment();
-		const { requestedRestoreTimestamp, showRestoreConfirmDialog } = this.state;
-
 		const queryStart = startMoment.startOf( 'month' ).valueOf();
 		const queryEnd = startMoment.endOf( 'month' ).valueOf();
 
@@ -410,15 +414,6 @@ class ActivityLog extends Component {
 				{ ! isRewindActive && !! isPressable && <ActivityLogRewindToggle siteId={ siteId } /> }
 				{ this.renderLogs() }
 				{ this.renderMonthNavigation( 'bottom' ) }
-
-				<ActivityLogConfirmDialog
-					applySiteOffset={ this.applySiteOffset }
-					isVisible={ showRestoreConfirmDialog }
-					siteTitle={ siteTitle }
-					timestamp={ requestedRestoreTimestamp }
-					onClose={ this.handleRestoreDialogClose }
-					onConfirm={ this.handleRestoreDialogConfirm }
-				/>
 				<JetpackColophon />
 			</Main>
 		);
