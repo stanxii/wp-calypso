@@ -22,7 +22,8 @@ var tinymce = require( 'tinymce/tinymce' ),
 import views from './views';
 import { renderWithReduxStore } from 'lib/react-helpers';
 import { getSelectedSiteId } from 'state/ui/selectors';
-import EmbedDialog from 'components/tinymce/plugins/wpcom-view/views/embed/embed-dialog';
+//import EditEmbedDialog from 'components/tinymce/plugins/wpcom-view/views/embed/edit-embed-dialog';
+	// not needed?
 
 /**
  * WordPress View plugin.
@@ -84,6 +85,9 @@ function wpview( editor ) {
 		if ( ! replaceMarkers() ) {
 			return;
 		}
+		// maybe difference is that this just gets called once at beginning, not every time the dialog is opened.
+		// so maybe need to render the embedviewdialog container here, then reuse it when the thing is opened
+		// maybe the embed view should render a correesponding editembedview, that feels good
 
 		const store = editor.getParam( 'redux_store' );
 		const siteId = getSelectedSiteId( store.getState() );
@@ -96,6 +100,8 @@ function wpview( editor ) {
 			}
 
 			const type = $view.attr( 'data-wpview-type' );
+
+			//console.log( 'link: ', $view.find( '.wpview-body' )[ 0 ] );
 
 			renderWithReduxStore(
 				React.createElement( views.components[ type ], {
@@ -835,6 +841,7 @@ function wpview( editor ) {
 		}
 	} );
 
+	/*
 	editor.addCommand( 'embedEditLink', content => {
 		const node = editor.selection.getNode();
 
@@ -864,28 +871,28 @@ function wpview( editor ) {
 		}
 
 		console.log( 'foo', window.foo );
-        */
+        * /
+
+		console.log( 'embed: ', node );
 
 		ReactDom.render(
-			React.createElement( EmbedDialog, {
+			React.createElement( EditEmbedDialog, {
 				embedUrl: content,
 				isVisible: true,
-				onInsert: function( embedUrl ) {
-					console.log( 'oninsert', embedUrl );
-					// ugh, somewhere along the line this broke. now it's just inserting it into the anchor text at the begining of the editor content.
-					// maybe it always did that? need to reproduce reliably, might have to click in and out of embed focus, open/close, etc. or maybe it hapepns every time now.
-						// caused by calling this.embedViewManager.updateSite( this.props.siteId ); -- wtf, why?
-					// huh, if you do it several times in a row, it will work some times but not others. never seen it work on first load though
-					editor.execCommand( 'mceInsertContent', false, embedUrl );
-					editor.focus(); // otherwise the user has to click outside the element and then back on it again if they want the edit/remove dialog to re-appear -- todo explain better
-					// do on cancel too
-				},
+				onUpdate: embedUrl => editor.execCommand( 'mceInsertContent', false, embedUrl ),
 			} ),
 			node
 		);
 
-		// bugs with ctrl-z after editing?
+		// ctrl-z to undo messes things up. not sure if that's new here, though. if not, create issue but not blocker for this
 	} );
+	*/
+
+	/*
+	editor.addCommand( 'embedEditLink', content => {
+		// grab the editembeddialog that already exists, call startEditing( content )
+	} );
+	*/
 
 	editor.addButton( 'wp_view_edit', {
 		tooltip: i18n.translate( 'Edit', { context: 'verb' } ),

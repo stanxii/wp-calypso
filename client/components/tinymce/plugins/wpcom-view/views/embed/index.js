@@ -21,6 +21,9 @@ export default class EmbedViewManager extends EventEmitter {
 		super();
 
 		this.sitesListener = this.updateSite.bind( this );
+
+		// don't have editor, doesn't feel like this component should, either. maybe this would go in the manager?
+		//editor.addCommand( 'embedEditLink', EmbedView.startEditing );   // needs to be to an instance, not the class?
 	}
 
 	onChange() {
@@ -34,13 +37,11 @@ export default class EmbedViewManager extends EventEmitter {
 		if ( ! this.hasOwnProperty( 'siteId' ) ) {
 			// First update (after adding initial listener) should trigger a
 			// fetch, but not emit a change event
-			//console.log('updatesite first update');
 			this.siteId = siteId;
 			this.fetchSiteEmbeds();
 		} else if ( this.siteId !== siteId ) {
 			// Subsequent updates should neither emit a change nor trigger a
 			// fetch unless the site has changed
-			//console.log('udpatesite onchange');
 			this.siteId = siteId;
 			this.onChange();
 		}
@@ -139,6 +140,6 @@ export default class EmbedViewManager extends EventEmitter {
 	}
 
 	edit( editor, content ) {
-		editor.execCommand( 'embedEditLink', content );
+		editor.execCommand( 'embedDialog', content );
 	}
 }

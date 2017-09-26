@@ -8,6 +8,7 @@ import { forEach, map, mapValues, values } from 'lodash';
  * Internal dependencies
  */
 import GalleryView from './gallery-view';
+//import EditEmbedDialog from './views/embed/edit-embed-dialog';
 import EmbedViewManager from './views/embed';
 import ContactFormView from './views/contact-form';
 import * as VideoView from './views/video';
@@ -20,6 +21,7 @@ import { isEnabled } from 'config';
 let views = {
 	gallery: GalleryView,
 	embed: new EmbedViewManager(),
+	//editEmbedDialog: EditEmbedDialog,  // maybe should also move that component into a plugin like LinkDialog is
 	contactForm: ContactFormView,
 	video: VideoView,
 };

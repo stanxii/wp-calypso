@@ -11,31 +11,27 @@ import Button from 'components/button';
 import Dialog from 'components/dialog';
 import FormTextInput from 'components/forms/form-text-input';
 import { localize } from 'i18n-calypso';
-import { identity } from 'lodash';
 
 // todo
+	// test w/ multiple embedviews on a same page
 	// lint branch before commit
 	// add jsdoc to all functions
 
-export class EmbedDialog extends React.Component {
+export class EditEmbedDialog extends React.Component {
 	static propTypes = {
 		embedUrl: PropTypes.string,
 		isVisible: PropTypes.bool,
 
 		// Event handlers
-		onInsert: PropTypes.func.isRequired,
-			// change to not required and set default to noop? or go the other direction and make embedurl and siteid required too?
-			// probably rename to something more generic, b/c this could be used outside of tinymce context
+		onUpdate: PropTypes.func.isRequired,
 
 		// Inherited
-		translate: PropTypes.func,
-			// todo make required and move identity to unit tests unless jeff comments on remove-button PR
+		translate: PropTypes.func.isRequired,
 	};
 
 	static defaultProps = {
 		embedUrl: '',
 		isVisible: false,
-		translate: identity,
 	};
 
 	state = {
@@ -43,28 +39,35 @@ export class EmbedDialog extends React.Component {
 		isVisible: this.props.isVisible,
 	};
 
-	onChangeEmbedUrl = ( event ) => {
-		//console.log( 'onchange - focus:', document.activeElement );
+	// set focus on input field when opening dialog or mounting component or something? good for ux
+	// is that bad for a11y?
 
+	onChangeEmbedUrl = ( event ) => {
 		this.setState( {
 			embedUrl: event.target.value,
-			// todo really need to do this manually? seems like something react could do automatically
 		} );
-
-		// the debounce works, but the focus is jumping back to the start of the editor, probably related to the onInsert problem.
-		// maybe it's because the embedview inside the editor is also refreshing? how to stop that to test if that fixes problem?
 
 		event.target.focus();
 		//todo hack to avoid focus stealiing. is it needed in this pr, or just the preview branch?
+		// maybe need to use refs? -- https://facebook.github.io/react/docs/refs-and-the-dom.html
 		// if remove, remove from mockChangeEvent too
+
+		// hitting enter should trigger this
+			// look at how link dialog does it
+			// there's a handleEnter function in ../../plugin.js
 	};
 
 	onCancel = () => {
 		this.setState( { isVisible: false } );
+
+		// hitting esc should trigger this
 	};
 
-	onUpdate = () => {
-		this.props.onInsert( this.state.embedUrl );
+	/**
+	 * Apply internal update logic before calling the parent component's onUpdate handler.
+	 */
+	onUpdateInternal = () => {
+		this.props.onUpdate( this.state.embedUrl );
 		this.setState( { isVisible: false } );
 	};
 
@@ -81,7 +84,7 @@ export class EmbedDialog extends React.Component {
 					<Button onClick={ this.onCancel }>
 						{ translate( 'Cancel' ) }
 					</Button>,
-					<Button primary onClick={ this.onUpdate }>
+					<Button primary onClick={ this.onUpdateInternal }>
 						{ translate( 'Update' ) }
 					</Button>
 				] }>
@@ -99,8 +102,6 @@ export class EmbedDialog extends React.Component {
 
 				todo now input field won't update w/ new state. er, maybe it does, but problem is that focus is often stolen?
 					// working now, maybe it was the css change? make sure still working in a few
-
-				hitting enter in input field should update, hitting escape should cancel
 
 				exception thrown when change it twice in a row. - only in FF
 					maybe related to needing to debounce?
@@ -128,4 +129,4 @@ export class EmbedDialog extends React.Component {
 	}
 }
 
-export default localize( EmbedDialog );
+export default localize( EditEmbedDialog );
