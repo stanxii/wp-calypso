@@ -76,15 +76,23 @@ module.exports = {
 		},
 		defaultVariation: 'modified',
 	},
-	readerIntroIllustration: {
-		datestamp: '20170718',
+	postSignupUpgradeScreen: {
+		datestamp: '20170810',
 		variations: {
-			blue: 33,
-			lightBlue: 33,
-			white: 34,
+			original: 50,
+			modified: 50,
 		},
-		defaultVariation: 'white',
-		assignmentMethod: 'userId',
+		defaultVariation: 'original',
+		allowExistingUsers: true,
+	},
+	privacyNoPopup: {
+		datestamp: '20170830',
+		variations: {
+			original: 50,
+			nopopup: 50,
+		},
+		defaultVariation: 'original',
+		allowExistingUsers: true,
 	},
 	skipThemesSelectionModal: {
 		datestamp: '20170904',
