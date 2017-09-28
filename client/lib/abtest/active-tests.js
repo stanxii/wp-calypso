@@ -1,3 +1,4 @@
+/** @format */
 module.exports = {
 	multiDomainRegistrationV1: {
 		datestamp: '20200721',
@@ -75,24 +76,6 @@ module.exports = {
 			modified: 100,
 		},
 		defaultVariation: 'modified',
-	},
-	postSignupUpgradeScreen: {
-		datestamp: '20170810',
-		variations: {
-			original: 50,
-			modified: 50,
-		},
-		defaultVariation: 'original',
-		allowExistingUsers: true,
-	},
-	privacyNoPopup: {
-		datestamp: '20170830',
-		variations: {
-			original: 50,
-			nopopup: 50,
-		},
-		defaultVariation: 'original',
-		allowExistingUsers: true,
 	},
 	skipThemesSelectionModal: {
 		datestamp: '20170904',
