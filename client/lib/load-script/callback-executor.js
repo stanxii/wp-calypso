@@ -42,7 +42,7 @@ export function removeScriptCallback( url, callback ) {
 	}
 
 	if ( 1 === callbacksForURLsInProgress.get( url ).length ) {
-		delete callbacksForURLsInProgress.delete( url );
+		callbacksForURLsInProgress.delete( url );
 		return;
 	}
 
@@ -51,7 +51,6 @@ export function removeScriptCallback( url, callback ) {
 
 export function removeScriptCallbacks( url ) {
 	debug( `Removing all callbacks for a script from "${ url }"` );
-
 	callbacksForURLsInProgress.delete( url );
 }
 
