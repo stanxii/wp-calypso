@@ -6,12 +6,17 @@ import { clone } from 'lodash';
 /**
  * Internal dependencies
  */
-var Dispatcher = require( 'dispatcher' ),
-	emitter = require( 'lib/mixins/emitter' ),
-	PluginsDataActions = require( './actions' ),
-	localStore = require( 'store' ),
-	PluginsListsStore,
-	config = require( 'config' );
+import Dispatcher from 'dispatcher';
+
+import emitter from 'lib/mixins/emitter';
+import PluginsDataActions from './actions';
+import localStore from 'store';
+import config from 'config';
+
+/**
+ * Internal dependencies
+ */
+var PluginsListsStore;
 
 var _shortLists = {},
 	_fullLists = {},
