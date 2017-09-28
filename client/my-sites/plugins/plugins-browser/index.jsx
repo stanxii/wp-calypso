@@ -277,9 +277,8 @@ const PluginsBrowser = React.createClass( {
 			} ),
 			author_name: 'Automattic',
 			icon: '//ps.w.org/jetpack/assets/icon-256x256.png',
-			link: plugin.link,
 			rating: 82, // Jetpack rating on WP.org on 2017-09-27
-			slug: 'wpcom-feature',
+			slug: 'jetpack',
 			isPreinstalled: this.isWpcomPluginActive( plugin ),
 			upgradeLink: '/plans/' + siteSlug + ( plugin.feature ? `?feature=${ plugin.feature }` : '' ),
 		} ) );
