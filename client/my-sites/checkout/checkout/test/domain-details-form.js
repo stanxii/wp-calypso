@@ -43,6 +43,7 @@ describe( 'Domain Details Form', () => {
 		contactDetails: {
 		},
 		translate: identity,
+		updateContactDetailsCache: identity
 	};
 
 	const domainProduct = domainRegistration( {
@@ -145,5 +146,46 @@ describe( 'Domain Details Form', () => {
 		const wrapper = shallow( <DomainDetailsForm { ...mixedSupportProps } /> );
 
 		expect( wrapper.find( 'PrivacyProtection' ) ).to.have.length( 1 );
+	} );
+
+	it( 'should not render address fieldset when no country selected', () => {
+		const wrapper = shallow( <DomainDetailsForm { ...defaultProps } /> );
+		wrapper.find( 'CountrySelect' ).simulate( 'change', { target: {
+			errors: [],
+			value: '',
+			isShowingErrors: false,
+			isPendingValidation: false,
+			isValidating: true,
+			name: 'countryCode'
+		} } );
+		expect( wrapper.find( '.domain-details__fieldset' ) ).to.have.length( 0 );
+	} );
+
+	it( 'should not render address fieldset when the country field is showing an error', () => {
+		const wrapper = shallow( <DomainDetailsForm { ...defaultProps } /> );
+		wrapper.find( 'CountrySelect' ).simulate( 'change', { target: {
+			errors: [ 'error' ],
+			value: 'BR',
+			isShowingErrors: false,
+			isPendingValidation: false,
+			isValidating: true,
+			name: 'countryCode'
+		} } );
+		expect( wrapper.find( '.domain-details__fieldset' ) ).to.have.length( 0 );
+	} );
+
+	it( 'should render address fieldset when a valid countryCode is selected', () => {
+		const wrapper = shallow( <DomainDetailsForm { ...defaultProps } /> );
+
+		wrapper.find( 'CountrySelect' ).simulate( 'change', { target: {
+			errors: [],
+			value: 'AU',
+			isShowingErrors: false,
+			isPendingValidation: false,
+			isValidating: true,
+			name: 'countryCode'
+		} } );
+
+		expect( wrapper.find( '.domain-details__form-fieldset' ) ).to.have.length( 1 );
 	} );
 } );
