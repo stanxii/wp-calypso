@@ -10,7 +10,6 @@ import { pick } from 'lodash';
  * Internal dependencies
  */
 import ResizableIframe from 'components/resizable-iframe';
-//import EditEmbedDialog from './edit-embed-dialog';
 import EmbedsStore from 'lib/embeds/store';
 import generateEmbedFrameMarkup from 'lib/embed-frame-markup';
 
@@ -23,12 +22,6 @@ class EmbedView extends Component {
 	static calculateState( state, props ) {
 		return EmbedsStore.get( props.content );
 	}
-
-	// add isediting to proptypes and defaultprops along w/ others that already exist
-
-	//state = {
-	//	isEditing: false,
-	//};
 
 	componentDidMount() {
 		// Rendering the frame follows a specific set of steps, whereby an
@@ -96,25 +89,6 @@ class EmbedView extends Component {
 		iframe.contentDocument.body.style.overflow = 'hidden';
 		iframe.contentDocument.close();
 	}
-/*
-	startEditing() {
-		this.setState( {
-			isEditing: true,
-		} );
-	}
-
-	stopEditing( event ) {
-		this.setState( {
-			isEditing: false,
-		} );
-		// also update tinymce somehow? -- event.target.value
-
-		//embedUrl => editor.execCommand( 'mceInsertContent', false, embedUrl )
-
-		// maybe setting isvisible:false shouldn't be managed in EditEmbedDialog.onCancel after all? do it here instead?
-		// or have the close there, but the isEditing here?
-	}
-*/
 
 	renderFrame() {
 		if ( ! this.state.wrapper ) {
@@ -124,22 +98,10 @@ class EmbedView extends Component {
 		return <ResizableIframe ref="iframe" onResize={ this.props.onResize } frameBorder="0" seamless width="100%" />;
 	}
 
-	renderEditDialog() {
-		return;
-		return (
-			<EditEmbedDialog
-				embedUrl={ this.props.content }
-				isVisible={ this.state.isEditing }
-				onUpdate={ this.stopEditing }
-			/>
-		);
-	}
-
 	render() {
 		return (
 			<div ref="view" className="wpview-content wpview-type-embed">
 				{ this.renderFrame() }
-				{ /*this.renderEditDialog()*/ }
 			</div>
 		);
 	}

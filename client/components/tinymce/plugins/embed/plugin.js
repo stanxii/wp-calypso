@@ -33,6 +33,7 @@ function embed( editor ) {
 
 		ReactDom.render( React.createElement( EmbedDialog, embedDialogProps ), embedDialogContainer );
 
+		// todo document why
 		if ( ! visible ) {
 			editor.focus();
 		}

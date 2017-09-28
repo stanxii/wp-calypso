@@ -21,9 +21,6 @@ export default class EmbedViewManager extends EventEmitter {
 		super();
 
 		this.sitesListener = this.updateSite.bind( this );
-
-		// don't have editor, doesn't feel like this component should, either. maybe this would go in the manager?
-		//editor.addCommand( 'embedEditLink', EmbedView.startEditing );   // needs to be to an instance, not the class?
 	}
 
 	onChange() {
