@@ -12,15 +12,9 @@ import Dialog from 'components/dialog';
 import FormTextInput from 'components/forms/form-text-input';
 import { localize } from 'i18n-calypso';
 
-{/*
-todo
-
-// hitting escape should close dialog
-	// dialog component should just do it automatically, but it isn't. why?
-	// doesn't close when click outside dialog eitehr, wtf
-
-*/}
-
+/**
+ * Shows the URL of am embed and allows it to be edited.
+ */
 export class EmbedDialog extends React.Component {
 	static propTypes = {
 		embedUrl: PropTypes.string,
@@ -43,28 +37,30 @@ export class EmbedDialog extends React.Component {
 		embedUrl: this.props.embedUrl,
 	};
 
+	/**
+	 * Reset `state.embedUrl` whenever the component's dialog is opened or closed.
+	 *
+	 * If this were not done, then switching back and forth between multiple embeds would result in
+	 * `state.embedUrl` being incorrect. For example, when the second embed was opened,
+	 * `state.embedUrl` would equal the value of the first embed, since it initially set the
+	 * state.
+	 *
+	 * @param {object} nextProps The properties that will be received.
+	 */
+	componentWillReceiveProps = ( nextProps ) => {
+		this.setState( {
+			embedUrl: nextProps.embedUrl,
+		} );
+	};
+
 	onChangeEmbedUrl = ( event ) => {
 		this.setState( {
 			embedUrl: event.target.value,
 		} );
 	};
 
-	// Reset to the original state
 	onCancel = () => {
-		/*
-		todo this is needed, right? if open, change, cancel, then reopen, it'll still have old value. why didn't unit test detect this?
-		test was done wrong, or just fundamentally test doesn't match real behavior?
-
-		*/
-		this.setState( {
-			embedUrl: this.props.embedUrl,
-			// probably some es6 sugar to make this nicer
-		} );
-
 		this.props.onCancel();
-
-		// todo also switching between modals can mess w/ the state, get the url for one instead of the other
-			// how to test for that, too?
 	};
 
 	onUpdate = () => {
@@ -81,6 +77,16 @@ export class EmbedDialog extends React.Component {
 	};
 
 	render() {
+		// todo
+		// autofocus not working. is this supposed to do what i think, or something else?
+			//remove the one in Dialog too, if don't use it in FormTextInput
+				// this isn't needed in devdocs, might not be needed for tinymce after figure out remaining issue
+			// autofocus works in devdocs/design, so probably the issue is something w/ tinymce
+
+		// hitting escape should close dialog
+			//	dialog component should just do it automatically, but it isn't. why?
+			//	doesn't close when click outside dialog eitehr, wtf
+
 		const { translate } = this.props,
 			dialogButtons = [
 				<Button onClick={ this.onCancel }>
@@ -93,15 +99,13 @@ export class EmbedDialog extends React.Component {
 
 		return (
 			<Dialog
+				autoFocus={ false }
+				buttons={ dialogButtons }
 				className="embed-dialog"
 				additionalClassNames="embed-dialog__modal"
 				isVisible={ this.props.isVisible }
 				onCancel={ this.onCancel }
-				buttons={ dialogButtons }
-				autoFocus={ false }
 			>
-				{/* autofocus above not necessary if below isn't used? */}
-
 				<h3 className="embed-dialog__title">
 					{ translate( 'Embed URL' ) }
 				</h3>
@@ -113,7 +117,6 @@ export class EmbedDialog extends React.Component {
 					onChange={ this.onChangeEmbedUrl }
 					onKeyDown={ this.onKeyDownEmbedUrl }
 				/>
-				{/* autofocusnot working. is this supposed to do what i think, or something else? */}
 			</Dialog>
 		);
 	}

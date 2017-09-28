@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import ReactDom from 'react-dom';
 import React from 'react';
+import ReactDom from 'react-dom';
 import tinymce from 'tinymce/tinymce';
 import { translate } from 'i18n-calypso';
 
@@ -11,74 +11,55 @@ import { translate } from 'i18n-calypso';
  */
 import EmbedDialog from './dialog';
 
-// modernize all the old syntax etc
-// tests for this file too, but what?
-// anything from wplink/plugin that you want to bring in here?
-
-function embed( editor ) {
+/**
+ * Manages an EmbedDialog to allow editing the URL of an embed inside the editor.
+ *
+ * @param {object} editor An instance of TinyMCE
+ */
+const embed = ( editor ) => {
 	let embedDialogContainer;
 
-	function render( visible = true ) {
-		const embedUrlNode = editor.selection.getNode(),
+	/**
+	 * Open or close the EmbedDialog
+	 *
+	 * @param {boolean} visible `true` makes the dialog visible; `false` hides it.
+	 */
+	const render = ( visible = true ) => {
+		const selectedEmbedNode = editor.selection.getNode(),
 			embedDialogProps = {
-				embedUrl: embedUrlNode.innerText || embedUrlNode.textContent,
+				embedUrl: selectedEmbedNode.innerText || selectedEmbedNode.textContent,
 				isVisible: visible,
 				onCancel: () => render( false ),
 				onUpdate: ( newUrl ) => {
 					editor.execCommand( 'mceInsertContent', false, newUrl );
-						// todo  should i preserve the surrounding div from ^^^ when inserting?
 					render( false );
 				},
 			};
 
 		ReactDom.render( React.createElement( EmbedDialog, embedDialogProps ), embedDialogContainer );
 
-		// todo document why
+		// Focus on the editor when closing the dialog, so that the user can start typing right away
+		// instead of having to tab back to the editor.
 		if ( ! visible ) {
 			editor.focus();
 		}
-	}
+	};
 
-	editor.on( 'init', function() {
+	editor.addCommand( 'embedDialog', () => render() );
+
+	editor.on( 'init', () => {
 		embedDialogContainer = editor.getContainer().appendChild(
 			document.createElement( 'div' )
 		);
 	} );
 
-	editor.on( 'remove', function() {
+	editor.on( 'remove', () => {
 		ReactDom.unmountComponentAtNode( embedDialogContainer );
 		embedDialogContainer.parentNode.removeChild( embedDialogContainer );
 		embedDialogContainer = null;
 	} );
+};
 
-	editor.addCommand( 'embedDialog', () => render() );
-
-	// todo maybe don't need this, but document if do. probably do.
-	editor.on( 'pastepreprocess', function( event ) {
-		let pastedStr = event.content;
-		console.log( 1,pastedStr);
-
-		if ( ! editor.selection.isCollapsed() ) {
-			pastedStr = pastedStr.replace( /<[^>]+>/g, '' );
-			pastedStr = tinymce.trim( pastedStr );
-
-			console.log( 2,pastedStr);
-
-			if ( /^(?:https?:)?\/\/\S+$/i.test( pastedStr ) ) {
-				console.log( 'test' );
-
-				editor.execCommand( 'mceInsertLink', false, {
-					href: editor.dom.decode( pastedStr )
-				} );
-
-				event.preventDefault();
-			}
-		}
-	} );
-}
-
-// use export default instead?
-
-module.exports = function() {
+export default () => {
 	tinymce.PluginManager.add( 'embed', embed );
 };

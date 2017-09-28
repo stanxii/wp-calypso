@@ -13,7 +13,6 @@ import ResizableIframe from 'components/resizable-iframe';
 import EmbedsStore from 'lib/embeds/store';
 import generateEmbedFrameMarkup from 'lib/embed-frame-markup';
 
-
 class EmbedView extends Component {
 	static getStores() {
 		return [ EmbedsStore ];

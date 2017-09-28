@@ -22,8 +22,6 @@ var tinymce = require( 'tinymce/tinymce' ),
 import views from './views';
 import { renderWithReduxStore } from 'lib/react-helpers';
 import { getSelectedSiteId } from 'state/ui/selectors';
-//import EditEmbedDialog from 'components/tinymce/plugins/wpcom-view/views/embed/edit-embed-dialog';
-	// not needed?
 
 /**
  * WordPress View plugin.
@@ -85,9 +83,6 @@ function wpview( editor ) {
 		if ( ! replaceMarkers() ) {
 			return;
 		}
-		// maybe difference is that this just gets called once at beginning, not every time the dialog is opened.
-		// so maybe need to render the embedviewdialog container here, then reuse it when the thing is opened
-		// maybe the embed view should render a correesponding editembedview, that feels good
 
 		const store = editor.getParam( 'redux_store' );
 		const siteId = getSelectedSiteId( store.getState() );
@@ -100,8 +95,6 @@ function wpview( editor ) {
 			}
 
 			const type = $view.attr( 'data-wpview-type' );
-
-			//console.log( 'link: ', $view.find( '.wpview-body' )[ 0 ] );
 
 			renderWithReduxStore(
 				React.createElement( views.components[ type ], {
@@ -840,59 +833,6 @@ function wpview( editor ) {
 			event.stopPropagation();
 		}
 	} );
-
-	/*
-	editor.addCommand( 'embedEditLink', content => {
-		const node = editor.selection.getNode();
-
-		//console.log('node',node);
-		//console.log( window.foo === node );
-
-		// maybe it changes b/c it's a node that tinemyce dynmaically creates a destroys? need to create our own permenant element outside of the editor instead?
-
-		// it is changing. maybe need to select it some other way. see what other places in calypso use.
-		// or maybe it inevitable b/c tinymce replaces things? in that case, maybe just need to destroy the old one
-
-		// this is creating an infinite number instead of creating 1 and reusing
-			// that's what contact-form and simple-payments do, though?
-			// maybe assign the React.createLement statement to a variable, then pass it to renderwithreduxstore?
-		// jeff said: Maybe the `node` value is changing or something
-
-		// wp_help creates an empty dom element when editor loads and reuses it
-
-		/*
-		let node;
-		if ( window.foo ) {
-			node = window.foo;
-			console.log('reused foo');
-		} else {
-			window.foo = node = editor.selection.getNode();
-			console.log('new foo')
-		}
-
-		console.log( 'foo', window.foo );
-        * /
-
-		console.log( 'embed: ', node );
-
-		ReactDom.render(
-			React.createElement( EditEmbedDialog, {
-				embedUrl: content,
-				isVisible: true,
-				onUpdate: embedUrl => editor.execCommand( 'mceInsertContent', false, embedUrl ),
-			} ),
-			node
-		);
-
-		// ctrl-z to undo messes things up. not sure if that's new here, though. if not, create issue but not blocker for this
-	} );
-	*/
-
-	/*
-	editor.addCommand( 'embedEditLink', content => {
-		// grab the editembeddialog that already exists, call startEditing( content )
-	} );
-	*/
 
 	editor.addButton( 'wp_view_edit', {
 		tooltip: i18n.translate( 'Edit', { context: 'verb' } ),
