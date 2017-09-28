@@ -260,28 +260,18 @@
 .reviews__reply-textarea {
 	line-height: 0;
 	position: relative;
+	border-top: 1px solid lighten( $gray, 30% );
 
 	textarea {
 		font-size: 14px;
-		height: 47px;
-		line-height: 21px;
-		min-height: 47px;
-		overflow: hidden;
-		padding: 12px 70px 12px 16px;
-		position: relative;
-		resize: vertical;
-		transition: min-height .15s linear;
-		white-space: pre-wrap;
-		word-wrap: break-word;
-		border-left: 0;
-		border-right: 0;
-		border-bottom: 0;
+		border-color: transparent;
+		margin: 2px;
+		width: calc( 100% - 4px );
+		padding: 10px 14px;
+		min-height: 68px;
 
-		&::placeholder {
-			color: $gray-text-min;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
+		&:focus {
+			border-color: $blue-wordpress;
 		}
 	}
 
